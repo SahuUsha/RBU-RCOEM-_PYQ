@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, Search, Clock, ChevronDown, Loader2, AlertCircle, FileQuestion } from 'lucide-react';
+import Latex from 'react-latex-next';
+import 'katex/dist/katex.min.css';
 
 const SubjectSearchPage = () => {
   const [subjects, setSubjects] = useState([]);
@@ -233,9 +235,11 @@ const SubjectSearchPage = () => {
                 </div>
                 <p className="question-text">{q.question?.question_text || q.text || 'No text available'}</p>
                 {q.question?.visual_content_latex && (
-                  <div className="latex-content">
-                    <small>Visual Content (LaTeX):</small>
-                    <pre>{q.question.visual_content_latex}</pre>
+                  <div className="latex-content rendered">
+                    <small>Visual Content:</small>
+                    <div className="latex-render-wrap">
+                      <Latex>{`$$${q.question.visual_content_latex}$$`}</Latex>
+                    </div>
                   </div>
                 )}
                 {q.question?.subquestions?.length > 0 && (
@@ -248,8 +252,10 @@ const SubjectSearchPage = () => {
                           {sub.marks && <span className="subq-marks">[{sub.marks}M]</span>}
                         </div>
                         {sub.visual_content_latex && (
-                          <div className="latex-content sub">
-                            <pre>{sub.visual_content_latex}</pre>
+                          <div className="latex-content sub rendered">
+                            <div className="latex-render-wrap">
+                              <Latex>{`$$${sub.visual_content_latex}$$`}</Latex>
+                            </div>
                           </div>
                         )}
                       </div>

@@ -999,6 +999,34 @@ h1, h2, h3, h4, h5, h6 {
   border-left: 3px solid var(--rbu-blue);
 }
 
+.latex-content.rendered {
+  font-family: inherit;
+  background: #ffffff;
+  border: 1px solid rgba(242, 101, 34, 0.15);
+}
+
+.latex-render-wrap {
+  padding: 0.5rem 0;
+  overflow-x: auto;
+  font-size: 1.05rem;
+}
+
+/* Ensure KaTeX tables look good */
+.katex-display > .katex {
+  text-align: left !important;
+  display: block !important;
+}
+
+.katex table {
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+
+.katex td, .katex th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
 .empty-state {
   text-align: center;
   padding: 3rem;
