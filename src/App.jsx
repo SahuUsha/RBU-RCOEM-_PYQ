@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Search as SearchIcon, BookOpen, Users, Home } from 'lucide-react';
+import { Search as SearchIcon, BookOpen, Users, Home, LogIn } from 'lucide-react';
 import LandingPage from './components/LandingPage';
 import SearchPage from './components/SearchPage';
 import SubjectSearchPage from './components/SubjectSearchPage';
 import ContributionPage from './components/ContributionPage';
+import LoginPage from './components/LoginPage';
 import rbuLogo from './assets/rbu-logo.png';
 
 const NAV_TABS = [
@@ -15,13 +16,31 @@ const NAV_TABS = [
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    setActiveTab('contrib');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    setIsLoggedIn(false);
+    setActiveTab('home');
+  };
 
   const renderPage = () => {
     switch (activeTab) {
       case 'home':    return <LandingPage onNavigate={setActiveTab} />;
       case 'search':  return <div className="container"><SearchPage /></div>;
       case 'subject': return <div className="container"><SubjectSearchPage /></div>;
-      case 'contrib': return <div className="container"><ContributionPage /></div>;
+      case 'contrib': 
+        if (!isLoggedIn) {
+          return <div className="container"><LoginPage onLoginSuccess={handleLoginSuccess} /></div>;
+        }
+        return <div className="container"><ContributionPage /></div>;
+      case 'login':   return <div className="container"><LoginPage onLoginSuccess={handleLoginSuccess} /></div>;
       default:        return <LandingPage onNavigate={setActiveTab} />;
     }
   };
@@ -52,6 +71,12 @@ function App() {
               {tab.label}
             </button>
           ))}
+          {isLoggedIn && (
+            <button className="nav-link logout-btn" onClick={handleLogout} style={{ color: '#e53e3e' }}>
+              <LogIn size={17} style={{ transform: 'rotate(180deg)' }} />
+              Logout
+            </button>
+          )}
         </div>
       </nav>
 

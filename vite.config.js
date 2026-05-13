@@ -8,7 +8,8 @@ export default defineConfig({
     proxy: {
       '/search': 'http://127.0.0.1:8000',
       '/upload': 'http://127.0.0.1:8000',
-      '/filter': 'http://127.0.0.1:8000'
+      '/filter': 'http://127.0.0.1:8000',
+      '/login': 'http://127.0.0.1:8000'
     }
   }
 })
