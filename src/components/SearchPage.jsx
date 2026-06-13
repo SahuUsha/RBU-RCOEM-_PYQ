@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Loader2, BookOpen, Clock, AlertCircle, Sparkles, Target, FileQuestion, HelpCircle } from 'lucide-react';
+import AILatexConverter from './AILatexConverter';
 
 const SearchPage = () => {
   const [query, setQuery] = useState('');
@@ -88,9 +89,7 @@ const SearchPage = () => {
                 </div>
                 
                 {item.question?.question_text && (
-                  <p className="text-lg font-medium mb-4">
-                    {item.question.question_text}
-                  </p>
+                  <AILatexConverter className="text-lg font-medium mb-4" originalText={item.question.question_text} />
                 )}
 
                 {item.question?.subquestions?.length > 0 && (
@@ -100,7 +99,7 @@ const SearchPage = () => {
                         <span className="font-semibold text-accent-primary shrink-0">
                           {sub.label ? `(${sub.label})` : '•'}
                         </span>
-                        <p>{sub.text}</p>
+                        <AILatexConverter originalText={sub.text} />
                       </div>
                     ))}
                   </div>

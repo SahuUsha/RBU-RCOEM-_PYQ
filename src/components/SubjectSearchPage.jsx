@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BookOpen, Search, Clock, ChevronDown, Loader2, AlertCircle, FileQuestion } from 'lucide-react';
 import Latex from 'react-latex-next';
 import 'katex/dist/katex.min.css';
+import AILatexConverter from './AILatexConverter';
 
 const SubjectSearchPage = () => {
   const [subjects, setSubjects] = useState([]);
@@ -233,13 +234,15 @@ const SubjectSearchPage = () => {
                   {q.marks && <span className="badge badge-orange">{q.marks} Marks</span>}
                   {q.exam_type && <span className="badge badge-blue">{q.exam_type}</span>}
                 </div>
-                <p className="question-text">{q.question?.question_text || q.text || 'No text available'}</p>
+                {q.question?.question_text || q.text ? (
+                  <AILatexConverter className="question-text" originalText={q.question?.question_text || q.text} />
+                ) : (
+                  <p className="question-text">No text available</p>
+                )}
                 {q.question?.visual_content_latex && (
                   <div className="latex-content rendered">
                     <small>Visual Content:</small>
-                    <div className="latex-render-wrap">
-                      <Latex>{`$$${q.question.visual_content_latex}$$`}</Latex>
-                    </div>
+                    <AILatexConverter originalText={`$$${q.question.visual_content_latex}$$`} />
                   </div>
                 )}
                 {q.question?.subquestions?.length > 0 && (
@@ -248,14 +251,12 @@ const SubjectSearchPage = () => {
                       <div key={si} className="subq-container">
                         <div className="subq">
                           <span className="subq-label">{sub.label ? `(${sub.label})` : '•'}</span>
-                          <span>{sub.text}</span>
+                          <AILatexConverter className="flex-1" originalText={sub.text} />
                           {sub.marks && <span className="subq-marks">[{sub.marks}M]</span>}
                         </div>
                         {sub.visual_content_latex && (
                           <div className="latex-content sub rendered">
-                            <div className="latex-render-wrap">
-                              <Latex>{`$$${sub.visual_content_latex}$$`}</Latex>
-                            </div>
+                            <AILatexConverter originalText={`$$${sub.visual_content_latex}$$`} />
                           </div>
                         )}
                       </div>

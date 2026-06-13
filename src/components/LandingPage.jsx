@@ -129,7 +129,7 @@ const LandingPage = ({ onNavigate }) => {
 
       {/* ── FOOTER ── */}
       <footer className="landing-footer">
-        <span>© 2025 RBU Intelligent Question Search · Made with ❤️ by RCOEM Students</span>
+        <span>Made by usha</span>
       </footer>
     </div>
   );

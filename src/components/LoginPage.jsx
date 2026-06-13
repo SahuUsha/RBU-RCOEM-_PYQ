@@ -47,18 +47,42 @@ const LoginPage = ({ onLoginSuccess }) => {
         }
     };
 
-    const handleRequestAccess = (e) => {
+    const handleRequestAccess = async (e) => {
         e.preventDefault();
-        const subject = encodeURIComponent(`Access Request: ${requestName} (${requestEmail})`);
-        const body = encodeURIComponent(`Admin,\n\nA new user is requesting contribution access:\n\nName: ${requestName}\nEmail: ${requestEmail}\n\nMessage:\n${requestMsg}\n\nRegards,\n${requestName}`);
+        setLoading(true);
+        setError('');
         
-        // Use Gmail direct compose link
-        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=ushasahu2010sahu@gmail.com&su=${subject}&body=${body}`;
-        window.open(gmailUrl, '_blank');
-        
-        // Show success message briefly
-        setSuccess(true);
-        setTimeout(() => setSuccess(false), 3000);
+        try {
+            const response = await fetch('http://127.0.0.1:8000/send-request', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: requestName,
+                    email: requestEmail,
+                    message: requestMsg,
+                }),
+            });
+
+            if (response.ok) {
+                setSuccess(true);
+                setRequestName('');
+                setRequestEmail('');
+                setRequestMsg('');
+                setTimeout(() => {
+                    setSuccess(false);
+                    setShowRequestForm(false);
+                }, 3000);
+            } else {
+                const data = await response.json();
+                setError(data.detail || 'Failed to send request. Please try again.');
+            }
+        } catch (err) {
+            setError('Could not connect to the server. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -203,9 +227,32 @@ const LoginPage = ({ onLoginSuccess }) => {
                                 />
                             </div>
 
-                            <button type="submit" className="login-button" style={{ background: '#4A90E2' }}>
-                                <LogIn size={18} />
-                                <span>Send Request</span>
+                            {error && (
+                                <div className="login-error">
+                                    <AlertCircle size={18} />
+                                    <span>{error}</span>
+                                </div>
+                            )}
+
+                            {success && (
+                                <div className="login-success">
+                                    <CheckCircle2 size={18} />
+                                    <span>Request sent successfully!</span>
+                                </div>
+                            )}
+
+                            <button 
+                                type="submit" 
+                                className={`login-button ${loading ? 'loading' : ''}`} 
+                                style={{ background: '#4A90E2' }}
+                                disabled={loading || success}
+                            >
+                                {loading ? 'Sending...' : (
+                                    <>
+                                        <LogIn size={18} />
+                                        <span>Send Request</span>
+                                    </>
+                                )}
                             </button>
                         </form>
 
